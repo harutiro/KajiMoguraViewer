@@ -94,7 +94,16 @@ function App() {
             }}
           />
         ) : (
-          <span style={{ fontSize: '12rem', zIndex: 2 }}>🏠</span>
+          <img 
+            src="/kajihouse.png" 
+            alt="kajiMogura" 
+            style={{
+              maxWidth: '80%',
+              maxHeight: '80vh',
+              objectFit: 'contain',
+              zIndex: 2
+            }}
+          />
         )
       )}
     </div>
