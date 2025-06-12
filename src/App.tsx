@@ -10,7 +10,25 @@ interface Stayer {
 
 function App() {
   const [isKajiPresent, setIsKajiPresent] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
+  // 時間に基づいてダークモードを設定
+  useEffect(() => {
+    const checkTime = () => {
+      const currentHour = new Date().getHours();
+      setIsDarkMode(currentHour >= 21 || currentHour < 9);
+    };
+
+    // 初回実行
+    checkTime();
+
+    // 1分ごとに時間をチェック
+    const timeIntervalId = setInterval(checkTime, 60000);
+
+    return () => clearInterval(timeIntervalId);
+  }, []);
+
+  // 在室状況の確認
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,7 +43,14 @@ function App() {
       }
     };
 
+    // 初回実行
     fetchData();
+
+    // 1分ごとに更新
+    const intervalId = setInterval(fetchData, 60000);
+
+    // クリーンアップ関数
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -38,14 +63,40 @@ function App() {
       fontSize: '8rem',
       fontFamily: 'Arial, sans-serif',
       fontWeight: 'bold',
-      color: '#333',
+      color: isDarkMode ? '#fff' : '#333',
       textAlign: 'center',
       position: 'fixed',
       top: 0,
       left: 0,
-      backgroundColor: '#f5f5f5'
+      backgroundColor: isDarkMode ? '#000' : '#f5f5f5',
+      transition: 'background-color 0.3s ease, color 0.3s ease'
     }}>
-      {isKajiPresent ? 'います' : 'いません'}
+      {isDarkMode ? (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#000',
+          zIndex: 1
+        }} />
+      ) : (
+        isKajiPresent ? (
+          <img 
+            src="/kajiMogura.png" 
+            alt="kajiMogura" 
+            style={{
+              maxWidth: '80%',
+              maxHeight: '80vh',
+              objectFit: 'contain',
+              zIndex: 2
+            }}
+          />
+        ) : (
+          <span style={{ fontSize: '12rem', zIndex: 2 }}>🏠</span>
+        )
+      )}
     </div>
   )
 }
