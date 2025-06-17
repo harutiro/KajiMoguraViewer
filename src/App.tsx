@@ -293,7 +293,7 @@ function App() {
           />
         ) : (
           <img 
-            src="/kajihouse.png" 
+            src="/lion.png" 
             alt="kajiMogura" 
             style={{
               maxWidth: '80%',
