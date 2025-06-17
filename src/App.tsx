@@ -16,6 +16,7 @@ function App() {
   const [debugInfo, setDebugInfo] = useState<string>('');
   const [currentAnimation, setCurrentAnimation] = useState<string>('');
   const [showDebug, setShowDebug] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // アニメーションの種類を定義
   const animationTypes = [
@@ -107,8 +108,11 @@ function App() {
         const kajiExists = data.some(stayer => stayer.name === 'kaji');
         console.log('Is Kaji present:', kajiExists);
         setIsKajiPresent(kajiExists);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+        // エラー時もローディングを終了
+        setIsLoading(false);
       }
     };
 
@@ -143,6 +147,53 @@ function App() {
       transition: 'all 0.3s ease'
     };
   };
+
+  // ローディング中の表示
+  if (isLoading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        width: '100vw',
+        fontSize: '2rem',
+        fontFamily: 'Arial, sans-serif',
+        color: isDarkMode ? '#fff' : '#333',
+        textAlign: 'center',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        backgroundColor: isDarkMode ? '#000' : '#f5f5f5',
+        transition: 'background-color 0.3s ease, color 0.3s ease'
+      }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '20px'
+        }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '4px solid #f3f3f3',
+            borderTop: '4px solid #3498db',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }} />
+          <div>読み込み中...</div>
+        </div>
+        <style>
+          {`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}
+        </style>
+      </div>
+    );
+  }
 
   return (
     <div style={{ 
