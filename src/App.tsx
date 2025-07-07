@@ -52,20 +52,20 @@ function App() {
   }, []);
 
   // 時間に基づいてダークモードを設定
-  useEffect(() => {
-    const checkTime = () => {
-      const currentHour = new Date().getHours();
-      setIsDarkMode(currentHour >= 21 || currentHour < 9);
-    };
+  // useEffect(() => {
+  //   const checkTime = () => {
+  //     const currentHour = new Date().getHours();
+  //     setIsDarkMode(currentHour >= 21 || currentHour < 9);
+  //   };
 
-    // 初回実行
-    checkTime();
+  //   // 初回実行
+  //   checkTime();
 
-    // 1分ごとに時間をチェック
-    const timeIntervalId = setInterval(checkTime, 60000);
+  //   // 1分ごとに時間をチェック
+  //   const timeIntervalId = setInterval(checkTime, 60000);
 
-    return () => clearInterval(timeIntervalId);
-  }, []);
+  //   return () => clearInterval(timeIntervalId);
+  // }, []);
 
   // アニメーションを手動でトリガーする関数
   const triggerAnimation = () => {
@@ -102,7 +102,18 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://staywatch-backend.kajilab.net/api/v1/stayers');
+        const response = await fetch('https://staywatch-backend.kajilab.net/api/v1/stayers', {
+          headers: {
+            'X-API-Key': import.meta.env.VITE_STAYWATCH_API_KEY
+          }
+        });
+        
+        if (response.status !== 200) {
+          console.error('API Error - Status Code:', response.status);
+          // 200番以外の場合はローディング状態を維持
+          return;
+        }
+        
         const data: Stayer[] = await response.json();
         console.log('API Response:', data);
         const kajiExists = data.some(stayer => stayer.name === 'kaji');
@@ -111,8 +122,7 @@ function App() {
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
-        // エラー時もローディングを終了
-        setIsLoading(false);
+        // ネットワークエラーなどの場合もローディング状態を維持
       }
     };
 
