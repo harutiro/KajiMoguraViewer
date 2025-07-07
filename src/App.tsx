@@ -52,20 +52,20 @@ function App() {
   }, []);
 
   // 時間に基づいてダークモードを設定
-  // useEffect(() => {
-  //   const checkTime = () => {
-  //     const currentHour = new Date().getHours();
-  //     setIsDarkMode(currentHour >= 21 || currentHour < 9);
-  //   };
+  useEffect(() => {
+    const checkTime = () => {
+      const currentHour = new Date().getHours();
+      setIsDarkMode(currentHour >= 21 || currentHour < 9);
+    };
 
-  //   // 初回実行
-  //   checkTime();
+    // 初回実行
+    checkTime();
 
-  //   // 1分ごとに時間をチェック
-  //   const timeIntervalId = setInterval(checkTime, 60000);
+    // 1分ごとに時間をチェック
+    const timeIntervalId = setInterval(checkTime, 60000);
 
-  //   return () => clearInterval(timeIntervalId);
-  // }, []);
+    return () => clearInterval(timeIntervalId);
+  }, []);
 
   // アニメーションを手動でトリガーする関数
   const triggerAnimation = () => {
